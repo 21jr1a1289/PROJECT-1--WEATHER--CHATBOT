@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CHATBOT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light gray background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #chatContainer {
+            width: 400px;
+            background-color: #ffffff; /* White background */
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        #chatOutput {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            background-color: #f9f9f9; /* Light gray for chat output */
+        }
+        #userInput {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff; /* Blue color */
+            color: white; /* White text */
+            border: none; /* No border */
+            cursor: pointer; /* Pointer cursor */
+        }
+        button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+    </style>
+    <script>
+        // This function will be called when the user clicks the "Send" button.
+        function sendMessage() {
+            // Get the user's input from the input field.
+            var message = document.getElementById("userInput").value;
+
+            // Create a new XMLHttpRequest object to send the message to the server.
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "ChatBotJava1Servlet", true); // Sending a POST request to the "ChatBotServlet" on the server.
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // Sending data in URL-encoded format.
+
+            // Handle the response from the server.
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    // Append the user's message to the chat output area.
+                    document.getElementById("chatOutput").innerHTML += "<p><strong>User:</strong> " + message + "</p>";
+                    
+                    // Append the chatbot's response (received from the server) to the chat output area.
+                    document.getElementById("chatOutput").innerHTML += "<p><strong>Bot:</strong> " + xhr.responseText + "</p>";
+                    
+                    // Scroll the chat output to the bottom to show the latest messages.
+                    document.getElementById("chatOutput").scrollTop = document.getElementById("chatOutput").scrollHeight;
+                }
+            };
+
+            // Send the user's message to the server (encoded in the URL format).
+            xhr.send("message=" + encodeURIComponent(message));
+
+            // Clear the input field after sending the message.
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</head>
+<body>
+    <div id="chatContainer">
+        <h1>SIMPLE JAVA CHATBOT</h1>
+        <div id="chatOutput"></div>
+        <input type="text" id="userInput" placeholder="Type your message here..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</body>
+</html>

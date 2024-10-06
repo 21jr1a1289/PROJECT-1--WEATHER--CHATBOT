@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #chatContainer {
+            width: 400px;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #chatOutput {
+            height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        #userInput {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #loading {
+            display: none;
+            font-style: italic;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatContainer">
+        <h1>Chatbot</h1>
+        <div id="chatOutput"></div>
+        <input type="text" id="userInput" placeholder="Type your message here..." />
+        <button onclick="sendMessage()">Send</button>
+        <div id="loading">Loading...</div>
+    </div>
+
+    <script>
+    function sendMessage() {
+            var message = document.getElementById("userInput").value;
+            if (message.trim() === "") return; // Avoid sending empty messages
+
+            document.getElementById("loading").style.display = "block"; // Show loading
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "ChatBotJava1Servlet", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById("chatOutput").innerHTML += "<p><strong>User:</strong> " + message + "</p>";
+                    document.getElementById("chatOutput").innerHTML += "<p><strong>Bot:</strong> " + xhr.responseText + "</p>";
+                    document.getElementById("loading").style.display = "none"; // Hide loading after response
+                    document.getElementById("chatOutput").scrollTop = document.getElementById("chatOutput").scrollHeight;
+                }
+            };
+
+            xhr.send("message=" + encodeURIComponent(message));
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</body>
+</html>
